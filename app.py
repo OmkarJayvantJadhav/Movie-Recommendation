@@ -281,22 +281,35 @@ if movies is None or similarity is None:
     st.stop()
 
 # =============================================================================
-# 9. SEARCH BAR & DISCOVERY ENGINE
+# 9. SEARCH BAR & DISCOVERY ENGINE (ACCESS ALL 4,800+ MOVIES)
 # =============================================================================
 render_html("""
 <div style="margin-top: 1rem; margin-bottom: 0.5rem;">
     <h3 style="color: #FFFFFF; font-size: 1.3rem; font-weight: 800; margin: 0; display: flex; align-items: center;">
-        <span style="color: #E50914; margin-right: 8px;">🔍</span> Search & Explore Movies
+        <span style="color: #E50914; margin-right: 8px;">🔍</span> Search & Explore Full Catalog (4,800+ Movies)
     </h3>
-    <p style="color: #AAAAAA; font-size: 0.9rem; margin: 4px 0 12px 0;">Search our catalog by title, actor, director, or genre keyword to instantly discover personalized movie recommendations.</p>
+    <p style="color: #AAAAAA; font-size: 0.9rem; margin: 4px 0 12px 0;">Search by keyword or select any movie from our complete catalog dropdown below to instantly view details and AI recommendations.</p>
 </div>
 """)
 
-search_query = st.text_input(
-    "Unified Search",
-    placeholder="Type any movie title, actor, director, or keyword (e.g. Inception, Leonardo DiCaprio, Christopher Nolan, Sci-Fi, Action)...",
-    label_visibility="collapsed"
-)
+col_search, col_dropdown = st.columns([3, 2])
+
+with col_search:
+    search_query = st.text_input(
+        "Unified Search",
+        placeholder="Type any title, actor, director, or genre (e.g. Inception, DiCaprio, Nolan, Sci-Fi)...",
+        label_visibility="collapsed"
+    )
+
+all_titles_sorted = ["-- Browse All 4,800+ Movies --"] + list(movies['title'].sort_values().unique())
+with col_dropdown:
+    selected_from_dropdown = st.selectbox(
+        "Browse Full Catalog",
+        options=all_titles_sorted,
+        label_visibility="collapsed"
+    )
+    if selected_from_dropdown and selected_from_dropdown != "-- Browse All 4,800+ Movies --":
+        st.session_state.selected_movie = selected_from_dropdown
 
 # Render search results if query typed
 if search_query and len(search_query.strip()) >= 2:
