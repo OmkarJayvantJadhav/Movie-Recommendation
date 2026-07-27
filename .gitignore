@@ -1,0 +1,29 @@
+# Pickled model files
+*.pkl
+movie_dict.pkl
+similarity.pkl
+
+# Datasets
+*.csv
+tmdb_5000_movies.csv
+tmdb_5000_credits.csv
+
+# Environment variables & secrets
+.env
+.env.*
+.streamlit/secrets.toml
+
+# Python cache and virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# OS generated files
+.DS_Store
+Thumbs.db

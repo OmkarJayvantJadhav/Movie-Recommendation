@@ -1,0 +1,264 @@
+/* ==========================================================================
+   AUTHENTIC NETFLIX CLONE STREAMLIT THEME (style.css)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;500;700;900&family=Montserrat:wght@400;600;700;900&display=swap');
+
+/* Reset Streamlit containers to full-screen wall-to-wall dark black */
+.block-container {
+    padding-top: 0rem !important;
+    padding-bottom: 3rem !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+    max-width: 100% !important;
+    background-color: #141414 !important;
+}
+
+body, .stApp, .main {
+    background-color: #141414 !important;
+    color: #FFFFFF !important;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+}
+
+/* Hide default Streamlit headers, footers, and sidebars */
+header[data-testid="stHeader"] {
+    background: transparent !important;
+    z-index: 0 !important;
+}
+section[data-testid="stSidebar"] { display: none !important; }
+button[data-testid="baseButton-headerNoPadding"] { display: none !important; }
+footer { display: none !important; }
+
+/* --------------------------------------------------------------------------
+   NETFLIX NAVIGATION BAR & AGGRESSIVE LINK RESET (NO BLUE LINKS/UNDERLINES)
+   -------------------------------------------------------------------------- */
+.netflix-navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 0;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    position: sticky;
+    top: 0;
+    background-color: rgba(20, 20, 20, 0.95);
+    z-index: 9999;
+    backdrop-filter: blur(10px);
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 1.8rem;
+}
+
+/* Override Streamlit blue hyperlinks and underlines */
+.netflix-navbar a, .netflix-navbar a:link, .netflix-navbar a:visited, .netflix-navbar a:hover, .netflix-navbar a:active,
+a.movie-card-link, a.movie-card-link:link, a.movie-card-link:visited, a.movie-card-link:hover, a.movie-card-link:active {
+    color: #E5E5E5 !important;
+    text-decoration: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.netflix-navbar a.netflix-logo, .netflix-navbar a.netflix-logo:link, .netflix-navbar a.netflix-logo:visited, .netflix-navbar a.netflix-logo:hover {
+    color: #E50914 !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 2rem !important;
+    font-weight: 900 !important;
+    letter-spacing: -1.5px !important;
+    text-shadow: 0 2px 10px rgba(229, 9, 20, 0.5) !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+}
+
+.netflix-navbar a.nav-link {
+    color: #CCCCCC !important;
+    font-size: 0.95rem !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    transition: color 0.2s ease !important;
+}
+
+.netflix-navbar a.nav-link:hover, .netflix-navbar a.nav-link.active {
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.nav-icon {
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #FFFFFF;
+    transition: transform 0.2s ease;
+}
+
+.nav-icon:hover {
+    transform: scale(1.15);
+}
+
+.profile-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.2);
+    cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   NETFLIX HERO BANNER
+   -------------------------------------------------------------------------- */
+.hero-banner {
+    position: relative;
+    padding: 4rem 3rem 4rem 3rem;
+    border-radius: 8px;
+    background: linear-gradient(90deg, rgba(20,20,20,0.95) 0%, rgba(20,20,20,0.75) 45%, rgba(20,20,20,0.2) 100%), 
+                url('https://image.tmdb.org/t/p/original/nMKdUUepR0i5zn0y1T4CsSB5chy.jpg');
+    background-size: cover;
+    background-position: center 20%;
+    border: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 2.5rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.9);
+    min-height: 480px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.top10-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #FFFFFF;
+    font-weight: 800;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    margin-bottom: 0.8rem;
+    text-transform: uppercase;
+}
+
+.top10-icon {
+    background-color: #E50914;
+    color: #FFFFFF;
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-weight: 900;
+    font-size: 0.75rem;
+}
+
+.hero-title {
+    font-size: 4.5rem;
+    font-weight: 900;
+    letter-spacing: -2px;
+    margin: 0 0 0.8rem 0;
+    color: #FFFFFF;
+    text-shadow: 0 4px 15px rgba(0,0,0,0.9);
+    line-height: 1.05;
+}
+
+.hero-meta {
+    color: #46d369;
+    font-weight: 800;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.hero-overview {
+    font-size: 1.15rem;
+    color: #E5E5E5;
+    font-weight: 400;
+    max-width: 620px;
+    line-height: 1.55;
+    margin-bottom: 2rem;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.9);
+}
+
+/* --------------------------------------------------------------------------
+   STREAMLIT BUTTON CUSTOMIZATION (NETFLIX RED & DARK STYLE)
+   -------------------------------------------------------------------------- */
+button[kind="primary"] {
+    background-color: #E50914 !important;
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    border: none !important;
+    border-radius: 4px !important;
+    padding: 0.6rem 1.2rem !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5) !important;
+}
+
+button[kind="primary"]:hover {
+    background-color: #f40612 !important;
+    transform: scale(1.03) !important;
+    box-shadow: 0 0 18px rgba(229, 9, 20, 0.8) !important;
+}
+
+button[kind="secondary"] {
+    background-color: rgba(42, 42, 42, 0.85) !important;
+    color: #FFFFFF !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 4px !important;
+    padding: 0.4rem 0.8rem !important;
+    transition: all 0.2s ease !important;
+}
+
+button[kind="secondary"]:hover {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border-color: #FFFFFF !important;
+    color: #FFFFFF !important;
+}
+
+/* --------------------------------------------------------------------------
+   CLICKABLE MOVIE CARDS & HOVER EFFECTS (NO BUTTONS REQUIRED!)
+   -------------------------------------------------------------------------- */
+a.movie-card-link {
+    text-decoration: none !important;
+    display: block !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+
+img.poster-img {
+    width: 100% !important;
+    border-radius: 6px !important;
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease !important;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.7) !important;
+    display: block !important;
+}
+
+a.movie-card-link:hover img.poster-img {
+    transform: scale(1.06) !important;
+    box-shadow: 0 12px 25px rgba(0,0,0,0.9), 0 0 18px rgba(229, 9, 20, 0.5) !important;
+}
+
+a.movie-card-link:hover h4 {
+    color: #E50914 !important;
+    transition: color 0.2s ease !important;
+}
+
+/* Streamlit Input Styling for Netflix Look */
+div[data-baseweb="input"], div[data-baseweb="select"] {
+    background-color: #262626 !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 4px !important;
+    color: #FFFFFF !important;
+}
+
+div[data-baseweb="input"]:focus-within, div[data-baseweb="select"]:focus-within {
+    border-color: #E50914 !important;
+    box-shadow: 0 0 10px rgba(229, 9, 20, 0.5) !important;
+}

@@ -1,0 +1,12 @@
+[theme]
+# Sleek Netflix-inspired Dark Mode Theme
+primaryColor = "#E50914"
+backgroundColor = "#141414"
+secondaryBackgroundColor = "#1F1F1F"
+textColor = "#FFFFFF"
+font = "sans serif"
+
+[server]
+# Clean URL formatting & security settings
+enableCORS = true
+enableXsrfProtection = true
