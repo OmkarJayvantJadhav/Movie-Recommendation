@@ -252,15 +252,28 @@ a.movie-card-link:hover h4 {
     transition: color 0.2s ease !important;
 }
 
-/* Streamlit Input Styling for Netflix Look */
+/* Streamlit Input & Selectbox Styling for Premium Netflix Look */
 div[data-baseweb="input"], div[data-baseweb="select"] {
-    background-color: #262626 !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    border-radius: 4px !important;
+    background-color: #1F1F1F !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    border-radius: 6px !important;
     color: #FFFFFF !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+}
+
+div[data-baseweb="input"]:hover, div[data-baseweb="select"]:hover {
+    border-color: #E50914 !important;
+    background-color: #262626 !important;
 }
 
 div[data-baseweb="input"]:focus-within, div[data-baseweb="select"]:focus-within {
     border-color: #E50914 !important;
-    box-shadow: 0 0 10px rgba(229, 9, 20, 0.5) !important;
+    box-shadow: 0 0 12px rgba(229, 9, 20, 0.6) !important;
+}
+
+div[data-baseweb="select"] span, div[data-baseweb="select"] div {
+    color: #FFFFFF !important;
+    font-size: 0.92rem !important;
+    font-weight: 600 !important;
 }

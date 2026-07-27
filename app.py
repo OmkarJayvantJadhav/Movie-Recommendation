@@ -284,32 +284,45 @@ if movies is None or similarity is None:
 # 9. SEARCH BAR & DISCOVERY ENGINE (ACCESS ALL 4,800+ MOVIES)
 # =============================================================================
 render_html("""
-<div style="margin-top: 1rem; margin-bottom: 0.5rem;">
-    <h3 style="color: #FFFFFF; font-size: 1.3rem; font-weight: 800; margin: 0; display: flex; align-items: center;">
-        <span style="color: #E50914; margin-right: 8px;">🔍</span> Search & Explore Full Catalog (4,800+ Movies)
+<div style="margin-top: 1rem; margin-bottom: 0.8rem;">
+    <h3 style="color: #FFFFFF; font-size: 1.35rem; font-weight: 800; margin: 0; display: flex; align-items: center;">
+        <span style="color: #E50914; margin-right: 8px;">🎬</span> Explore Complete Catalog (4,800+ Movies)
     </h3>
-    <p style="color: #AAAAAA; font-size: 0.9rem; margin: 4px 0 12px 0;">Search by keyword or select any movie from our complete catalog dropdown below to instantly view details and AI recommendations.</p>
+    <p style="color: #AAAAAA; font-size: 0.9rem; margin: 4px 0 14px 0;">Search by keyword, filter by genre, or select any title directly from our complete streaming database.</p>
 </div>
 """)
 
-col_search, col_dropdown = st.columns([3, 2])
+col_search, col_dropdown = st.columns([1, 1])
 
 with col_search:
     search_query = st.text_input(
         "Unified Search",
-        placeholder="Type any title, actor, director, or genre (e.g. Inception, DiCaprio, Nolan, Sci-Fi)...",
+        placeholder="🔍 Type title, actor, director, or genre (e.g. Inception, Nolan, Sci-Fi)...",
         label_visibility="collapsed"
     )
 
-all_titles_sorted = ["-- Browse All 4,800+ Movies --"] + list(movies['title'].sort_values().unique())
+all_titles_sorted = ["🍿 Select a movie from our 4,800+ catalog..."] + list(movies['title'].sort_values().unique())
 with col_dropdown:
     selected_from_dropdown = st.selectbox(
         "Browse Full Catalog",
         options=all_titles_sorted,
         label_visibility="collapsed"
     )
-    if selected_from_dropdown and selected_from_dropdown != "-- Browse All 4,800+ Movies --":
+    if selected_from_dropdown and selected_from_dropdown != "🍿 Select a movie from our 4,800+ catalog...":
         st.session_state.selected_movie = selected_from_dropdown
+
+# Genre Quick Filter Pills
+render_html("""
+<div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; margin-bottom: 1.2rem; align-items: center;">
+    <span style="color: #AAAAAA; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-right: 4px;">Quick Filters:</span>
+    <span style="background: rgba(229, 9, 20, 0.2); color: #FF2E38; border: 1px solid #E50914; padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">🔥 Top Rated</span>
+    <span style="background: rgba(255, 255, 255, 0.08); color: #CCCCCC; border: 1px solid rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">🚀 Sci-Fi</span>
+    <span style="background: rgba(255, 255, 255, 0.08); color: #CCCCCC; border: 1px solid rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">💥 Action</span>
+    <span style="background: rgba(255, 255, 255, 0.08); color: #CCCCCC; border: 1px solid rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">🎭 Drama</span>
+    <span style="background: rgba(255, 255, 255, 0.08); color: #CCCCCC; border: 1px solid rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">🩸 Thriller</span>
+    <span style="background: rgba(255, 255, 255, 0.08); color: #CCCCCC; border: 1px solid rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">😂 Comedy</span>
+</div>
+""")
 
 # Render search results if query typed
 if search_query and len(search_query.strip()) >= 2:
