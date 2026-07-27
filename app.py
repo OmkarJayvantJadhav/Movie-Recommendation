@@ -89,10 +89,18 @@ TMDB_API_KEY = TMDB_API_KEY.strip()
 # =============================================================================
 @st.cache_data(show_spinner=False)
 def load_data():
-    """Loads movie dataframe, similarity matrix, and rich metadata dictionary."""
+    """Loads movie dataframe, similarity matrix, and rich metadata dictionary. Automatically builds models if missing."""
+    if not os.path.exists("movie_dict.pkl") or not os.path.exists("similarity.pkl"):
+        try:
+            import model_builder
+            model_builder.build_models()
+        except Exception as e:
+            st.error(f"Error building models: {e}")
+            return None, None, {}
+
     if not os.path.exists("movie_dict.pkl") or not os.path.exists("similarity.pkl"):
         return None, None, {}
-    
+
     with open("movie_dict.pkl", "rb") as f:
         movie_dict = pickle.load(f)
     with open("similarity.pkl", "rb") as f:
