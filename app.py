@@ -273,11 +273,6 @@ render_html("""
     <div class="navbar-left">
         <a href="?" target="_self" class="netflix-logo">NETFLIX</a>
     </div>
-    <div class="navbar-right">
-        <span class="nav-icon" title="Search">🔍</span>
-        <span class="nav-icon" title="Notifications">🔔</span>
-        <img class="profile-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Profile">
-    </div>
 </div>
 """)
 

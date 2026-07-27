@@ -20,14 +20,16 @@ body, .stApp, .main {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
 }
 
-/* Hide default Streamlit headers, footers, and sidebars */
-header[data-testid="stHeader"] {
-    background: transparent !important;
-    z-index: 0 !important;
-}
-section[data-testid="stSidebar"] { display: none !important; }
+/* Hide default Streamlit headers, footers, toolbar, and sidebars */
+#MainMenu { visibility: hidden !important; display: none !important; }
+header { visibility: hidden !important; display: none !important; }
+footer { visibility: hidden !important; display: none !important; }
+header[data-testid="stHeader"] { display: none !important; }
+div[data-testid="stToolbar"] { display: none !important; }
+div[data-testid="stDecoration"] { display: none !important; }
 button[data-testid="baseButton-headerNoPadding"] { display: none !important; }
-footer { display: none !important; }
+button[data-testid="baseButton-header"] { display: none !important; }
+section[data-testid="stSidebar"] { display: none !important; }
 
 /* --------------------------------------------------------------------------
    NETFLIX NAVIGATION BAR & AGGRESSIVE LINK RESET (NO BLUE LINKS/UNDERLINES)
