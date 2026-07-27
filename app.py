@@ -11,7 +11,6 @@ import streamlit as st
 # =============================================================================
 st.set_page_config(
     page_title="Netflix • Watch Movies Online",
-    page_icon="🎬",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -19,9 +18,12 @@ st.set_page_config(
 # Clear Streamlit cache to guarantee fresh state
 st.cache_data.clear()
 
-# Initialize session state for interactive click-to-recommend functionality
+# Initialize session state for interactive navigation & filter functionality
 if "selected_movie" not in st.session_state:
     st.session_state.selected_movie = None
+
+if "active_genre" not in st.session_state:
+    st.session_state.active_genre = None
 
 # Extract query parameters for poster click navigation
 try:
@@ -116,7 +118,7 @@ def load_data():
 
     return pd.DataFrame(movie_dict), similarity_matrix, metadata_dict
 
-with st.spinner("🎬 Curating your Netflix streaming catalog & recommendations..."):
+with st.spinner("Loading Netflix streaming catalog..."):
     movies, similarity, all_metadata = load_data()
 
 # =============================================================================
@@ -277,18 +279,18 @@ render_html("""
 """)
 
 if movies is None or similarity is None:
-    st.error("🚨 **Service Temporarily Unavailable.** We are currently updating our streaming catalog. Please refresh the page soon!")
+    st.error("Service Temporarily Unavailable. We are currently updating our streaming catalog. Please refresh the page soon!")
     st.stop()
 
 # =============================================================================
-# 9. SEARCH BAR & DISCOVERY ENGINE (ACCESS ALL 4,800+ MOVIES)
+# 9. SEARCH BAR & FUNCTIONAL GENRE FILTERS (NO EMOJIS)
 # =============================================================================
 render_html("""
 <div style="margin-top: 1rem; margin-bottom: 0.8rem;">
-    <h3 style="color: #FFFFFF; font-size: 1.35rem; font-weight: 800; margin: 0; display: flex; align-items: center;">
-        <span style="color: #E50914; margin-right: 8px;">🎬</span> Explore Complete Catalog (4,800+ Movies)
+    <h3 style="color: #FFFFFF; font-size: 1.35rem; font-weight: 800; margin: 0;">
+        Explore Complete Catalog (4,800+ Movies)
     </h3>
-    <p style="color: #AAAAAA; font-size: 0.9rem; margin: 4px 0 14px 0;">Search by keyword, filter by genre, or select any title directly from our complete streaming database.</p>
+    <p style="color: #AAAAAA; font-size: 0.9rem; margin: 4px 0 14px 0;">Search by title, actor, or genre, or select any movie directly from our catalog below.</p>
 </div>
 """)
 
@@ -297,32 +299,67 @@ col_search, col_dropdown = st.columns([1, 1])
 with col_search:
     search_query = st.text_input(
         "Unified Search",
-        placeholder="🔍 Type title, actor, director, or genre (e.g. Inception, Nolan, Sci-Fi)...",
+        placeholder="Type title, actor, director, or genre (e.g. Inception, Nolan, Sci-Fi)...",
         label_visibility="collapsed"
     )
 
-all_titles_sorted = ["🍿 Select a movie from our 4,800+ catalog..."] + list(movies['title'].sort_values().unique())
+all_titles_sorted = ["Select a movie from 4,800+ catalog..."] + list(movies['title'].sort_values().unique())
 with col_dropdown:
     selected_from_dropdown = st.selectbox(
         "Browse Full Catalog",
         options=all_titles_sorted,
         label_visibility="collapsed"
     )
-    if selected_from_dropdown and selected_from_dropdown != "🍿 Select a movie from our 4,800+ catalog...":
+    if selected_from_dropdown and selected_from_dropdown != "Select a movie from 4,800+ catalog...":
         st.session_state.selected_movie = selected_from_dropdown
 
-# Genre Quick Filter Pills
-render_html("""
-<div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; margin-bottom: 1.2rem; align-items: center;">
-    <span style="color: #AAAAAA; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-right: 4px;">Quick Filters:</span>
-    <span style="background: rgba(229, 9, 20, 0.2); color: #FF2E38; border: 1px solid #E50914; padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">🔥 Top Rated</span>
-    <span style="background: rgba(255, 255, 255, 0.08); color: #CCCCCC; border: 1px solid rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">🚀 Sci-Fi</span>
-    <span style="background: rgba(255, 255, 255, 0.08); color: #CCCCCC; border: 1px solid rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">💥 Action</span>
-    <span style="background: rgba(255, 255, 255, 0.08); color: #CCCCCC; border: 1px solid rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">🎭 Drama</span>
-    <span style="background: rgba(255, 255, 255, 0.08); color: #CCCCCC; border: 1px solid rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">🩸 Thriller</span>
-    <span style="background: rgba(255, 255, 255, 0.08); color: #CCCCCC; border: 1px solid rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">😂 Comedy</span>
-</div>
-""")
+# Functional Genre Buttons
+st.markdown("<p style='color: #AAAAAA; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin: 12px 0 6px 0;'>Quick Genre Filters:</p>", unsafe_allow_html=True)
+genre_list = ["All Movies", "Top Rated", "Sci-Fi", "Action", "Drama", "Thriller", "Comedy", "Adventure"]
+btn_cols = st.columns(len(genre_list))
+
+for idx, g in enumerate(genre_list):
+    with btn_cols[idx]:
+        if st.button(g, key=f"btn_genre_{idx}", use_container_width=True):
+            if g == "All Movies":
+                st.session_state.active_genre = None
+            else:
+                st.session_state.active_genre = g
+
+# Render genre filter results if active
+if st.session_state.get("active_genre"):
+    active_g = st.session_state.active_genre
+    if active_g == "Top Rated":
+        filtered_df = movies.head(10)
+    else:
+        filtered_df = movies[movies['tags'].str.contains(active_g.lower(), na=False)].head(10)
+
+    render_html(f"""
+    <div style="margin-top: 1.5rem; margin-bottom: 1rem; padding: 12px 18px; background: rgba(229, 9, 20, 0.15); border-left: 4px solid #E50914; border-radius: 6px; display: flex; align-items: center; justify-content: space-between;">
+        <h3 style="color: #FFFFFF; font-size: 1.3rem; font-weight: 700; margin: 0;">Genre Filter: <span style="color: #E50914;">{active_g}</span> ({len(filtered_df)} shown)</h3>
+    </div>
+    """)
+    
+    g_cols = st.columns(5)
+    for i, (_, row_data) in enumerate(filtered_df.iterrows()):
+        col_idx = i % 5
+        m_title = row_data['title']
+        m_id = row_data['movie_id']
+        encoded_title = urllib.parse.quote(m_title)
+        with g_cols[col_idx]:
+            render_html(f"""
+            <a href="?movie={encoded_title}" target="_self" class="movie-card-link" title="Click to view details and recommendations for {m_title}">
+                <img src="{fetch_poster(m_id, m_title)}" class="poster-img" alt="{m_title}">
+                <div style="text-align: left; margin-top: 8px; padding: 0 2px;">
+                    <div style="margin-bottom: 4px;">
+                        <span style="color: #46d369; font-weight: 800; font-size: 0.82rem;">95% Match</span>
+                        <span style="border: 1px solid rgba(255,255,255,0.4); color: #AAAAAA; padding: 0px 4px; font-size: 0.65rem; border-radius: 2px; margin-left: 6px;">HD</span>
+                    </div>
+                    <h4 style="color: #FFFFFF; font-size: 0.95rem; font-weight: 700; margin: 0; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{m_title}</h4>
+                </div>
+            </a>
+            """)
+    render_html("<hr style='border-color: rgba(255,255,255,0.15); margin: 2rem 0;'>")
 
 # Render search results if query typed
 if search_query and len(search_query.strip()) >= 2:
@@ -340,7 +377,7 @@ if search_query and len(search_query.strip()) >= 2:
 
         render_html(f"""
         <div style="margin-top: 1.5rem; margin-bottom: 1rem; padding: 12px 18px; background: rgba(255, 255, 255, 0.06); border-left: 4px solid #FFFFFF; border-radius: 6px;">
-            <h3 style="color: #FFFFFF; font-size: 1.4rem; font-weight: 700; margin: 0;">🔍 Search Results for: <span style="color: #E50914;">"{search_query}"</span> ({len(matching_df)} found)</h3>
+            <h3 style="color: #FFFFFF; font-size: 1.4rem; font-weight: 700; margin: 0;">Search Results for: <span style="color: #E50914;">"{search_query}"</span> ({len(matching_df)} found)</h3>
         </div>
         """)
         
@@ -368,7 +405,7 @@ if search_query and len(search_query.strip()) >= 2:
         st.warning(f"No movies, actors, or genres matching '{search_query}' were found. Try another keyword!")
 
 # =============================================================================
-# 10. MOVIE DETAILS SHOWCASE & AI RECOMMENDATIONS
+# 10. MOVIE DETAILS SHOWCASE & RECOMMENDATIONS
 # =============================================================================
 if st.session_state.selected_movie:
     m_name = st.session_state.selected_movie
@@ -395,12 +432,12 @@ if st.session_state.selected_movie:
                 <h1 style="color: #FFFFFF; font-size: 3rem; font-weight: 900; margin: 0 0 8px 0; line-height: 1.1; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">{m_name}</h1>
                 <p style="color: #CCCCCC; font-style: italic; font-size: 1.15rem; margin: 0 0 1.2rem 0; font-weight: 500;">"{m_details.get('tagline', '')}"</p>
                 <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 1.5rem; flex-wrap: wrap; font-size: 0.95rem;">
-                    <span style="color: #E5E5E5; font-weight: 700;">📅 {m_details.get('year', '2015')}</span>
-                    <span style="color: #E5E5E5; font-weight: 700;">⏱️ {m_details.get('runtime', '2h 10m')}</span>
-                    <span style="color: #E50914; font-weight: 800;">⭐ {m_details.get('rating', '8.2 / 10')}</span>
+                    <span style="color: #E5E5E5; font-weight: 700;">Year: {m_details.get('year', '2015')}</span>
+                    <span style="color: #E5E5E5; font-weight: 700;">Runtime: {m_details.get('runtime', '2h 10m')}</span>
+                    <span style="color: #E50914; font-weight: 800;">Rating: {m_details.get('rating', '8.2 / 10')}</span>
                     <span style="border: 1px solid rgba(255,255,255,0.4); color: #CCCCCC; padding: 1px 6px; font-size: 0.75rem; border-radius: 2px; font-weight: 600;">HD</span>
                     <span style="border: 1px solid rgba(255,255,255,0.4); color: #CCCCCC; padding: 1px 6px; font-size: 0.75rem; border-radius: 2px; font-weight: 600;">5.1 Audio</span>
-                    <span style="background: rgba(255,255,255,0.1); color: #FFFFFF; padding: 3px 10px; border-radius: 4px; font-size: 0.85rem; font-weight: 600;">🎬 {m_details.get('genres', 'Feature Film')}</span>
+                    <span style="background: rgba(255,255,255,0.1); color: #FFFFFF; padding: 3px 10px; border-radius: 4px; font-size: 0.85rem; font-weight: 600;">{m_details.get('genres', 'Feature Film')}</span>
                 </div>
                 <h4 style="color: #AAAAAA; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 6px 0;">Story Synopsis</h4>
                 <p style="color: #E5E5E5; font-size: 1.1rem; line-height: 1.6; margin: 0 0 1.4rem 0; max-width: 780px;">{m_details.get('overview', 'No overview available.')}</p>
@@ -426,7 +463,7 @@ if st.session_state.selected_movie:
     # 2. Recommended Movies Grid
     render_html(f"""
     <div style="margin-top: 2rem; margin-bottom: 1rem; padding: 12px 18px; background: rgba(229, 9, 20, 0.15); border-left: 5px solid #E50914; border-radius: 6px;">
-        <h3 style="color: #FFFFFF; font-size: 1.5rem; font-weight: 800; margin: 0;">🍿 MORE LIKE <span style="color: #FF2E38;">{m_name.upper()}</span></h3>
+        <h3 style="color: #FFFFFF; font-size: 1.5rem; font-weight: 800; margin: 0;">MORE LIKE <span style="color: #FF2E38;">{m_name.upper()}</span></h3>
     </div>
     """)
     
@@ -479,9 +516,9 @@ render_html("""
 
 render_html("<br>")
 
-render_movie_row("🔥 Trending Now on Netflix", ["Avatar", "The Avengers", "Titanic", "Inception", "Interstellar"], "trending")
-render_movie_row("🌟 Critically Acclaimed Masterpieces", ["The Dark Knight", "The Shawshank Redemption", "The Godfather", "Pulp Fiction", "Fight Club"], "masterpieces")
-render_movie_row("🎬 Sci-Fi & Action Favorites", ["The Matrix", "Gladiator", "Jurassic Park", "Iron Man", "Forrest Gump"], "scifi")
+render_movie_row("Trending Now on Netflix", ["Avatar", "The Avengers", "Titanic", "Inception", "Interstellar"], "trending")
+render_movie_row("Critically Acclaimed Masterpieces", ["The Dark Knight", "The Shawshank Redemption", "The Godfather", "Pulp Fiction", "Fight Club"], "masterpieces")
+render_movie_row("Sci-Fi & Action Favorites", ["The Matrix", "Gladiator", "Jurassic Park", "Iron Man", "Forrest Gump"], "scifi")
 
 # =============================================================================
 # 12. CONSUMER FOOTER
